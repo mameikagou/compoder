@@ -1,6 +1,7 @@
 ---
 description: compoder generate:sql-api
 globs: 
+alwaysApply: false
 ---
 # MongoDB API Generation Guide
 
