@@ -40,33 +40,4 @@ declare namespace ComponentCodeApi {
 
   // create response
   export type createResponse = ReadableStream
-
-  // edit request
-  export interface editRequest {
-    codegenId: string
-    prompt: Prompt[]
-    component: {
-      id: string
-      name: string
-      code: string
-      prompt: Prompt[]
-    }
-    model: string
-    provider: string
-  }
-
-  // edit response
-  export type editResponse = ReadableStream
-
-  // save request
-  export interface saveRequest {
-    id: string
-    versionId: string
-    code: string
-  }
-
-  // delete request
-  export interface deleteRequest {
-    id: string
-  }
 }
