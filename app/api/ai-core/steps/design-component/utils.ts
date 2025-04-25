@@ -221,6 +221,8 @@ export async function generateComponentDesign(
       accumulatedJson += part
     }
 
+    console.log("accumulatedJson", accumulatedJson)
+
     try {
       if (!accumulatedJson) {
         throw new Error(
