@@ -61,3 +61,50 @@ export const useComponentCodeDetail = (id: string, codegenId: string) => {
     staleTime: 0,
   })
 }
+
+export const useGetCodegenDetail = (id: string) => {
+  return useQuery<
+    CodegenApi.DetailResponse,
+    Error,
+    CodegenApi.DetailResponse["data"]
+  >({
+    queryKey: ["getCodegenDetail", id],
+    queryFn: () => getCodegenDetail({ id }),
+    select: response => response.data,
+    enabled: !!id,
+  })
+}
+
+export const useComponentCodeList = (params: ComponentCodeApi.listRequest) => {
+  return useQuery<
+    ComponentCodeApi.listResponse,
+    Error,
+    {
+      items: ComponentItem[]
+      total: number
+    }
+  >({
+    queryKey: ["getComponentCodeList", params],
+    queryFn: () => getComponentCodeList(params),
+    select: response => {
+      const items = response.data.map(item => {
+        const parsed = item.latestVersionCode
+          ? transformComponentArtifactFromXml(item.latestVersionCode)
+          : null
+
+        return {
+          id: String(item._id),
+          title: item.name,
+          description: item.description,
+          code: parsed?.codes || {},
+          entryFile: parsed?.entryFile || "",
+        }
+      })
+      return {
+        items,
+        total: response.total,
+      }
+    },
+    enabled: !!params.codegenId,
+  })
+}

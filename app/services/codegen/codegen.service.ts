@@ -16,3 +16,15 @@ export const getCodegenList = async (
   })
   return response.json()
 }
+
+export const getCodegenDetail = async (
+  params: CodegenApi.DetailRequest,
+): Promise<CodegenApi.DetailResponse> => {
+  const queryString = new URLSearchParams({
+    id: params.id,
+  }).toString()
+  const response = await request(`/codegen/detail?${queryString}`, {
+    method: "GET",
+  })
+  return response.json()
+}

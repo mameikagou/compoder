@@ -7,6 +7,7 @@ import {
 } from "@/app/services/componentCode/componentCode.service"
 import { ComponentCodeApi } from "@/app/api/componentCode/type"
 import { useToast } from "@/hooks/use-toast"
+import { Prompt } from "@/lib/db/componentCode/types"
 
 export const useEditComponentCode = () => {
   return useMutation<
@@ -60,6 +61,22 @@ export const useDeleteComponentCode = () => {
         description: error.message || "Failed to delete component",
         variant: "destructive",
       })
+    },
+  })
+}
+
+export const useCreateComponentCode = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation<
+    ComponentCodeApi.createResponse,
+    Error,
+    ComponentCodeApi.createRequest
+  >({
+    mutationFn: params => createComponentCode(params),
+    onSuccess: () => {
+      // 成功后失效所有组件代码列表查询缓存
+      queryClient.invalidateQueries({ queryKey: ["getComponentCodeList"] })
     },
   })
 }
