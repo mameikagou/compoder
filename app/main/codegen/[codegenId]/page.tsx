@@ -73,6 +73,8 @@ export default function CodegenDetailPage({
   const initComponentMutation = useCreateComponentCode()
   const deleteComponentMutation = useDeleteComponentCode()
 
+  console.log("codegenDetail", codegenDetail)
+
   const shouldShowList = useShowOnFirstData(componentCodeData?.items)
 
   // handle LLM change
