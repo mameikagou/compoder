@@ -7,10 +7,10 @@ import { connectToDatabase } from "@/lib/db/mongo"
 export async function GET(req: NextRequest) {
   try {
     // Add identity verification check
-    const authError = await validateSession()
-    if (authError) {
-      return authError
-    }
+    // const authError = await validateSession()
+    // if (authError) {
+    //   return authError
+    // }
 
     await connectToDatabase()
 

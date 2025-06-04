@@ -19,7 +19,7 @@ import {
   useCodegenDetail,
   useComponentCodeList,
 } from "../server-store/selectors"
-import { useMemo, useState } from "react"
+import { use, useMemo, useState } from "react"
 import {
   useDeleteComponentCode,
   useCreateComponentCode,
@@ -39,9 +39,10 @@ import { useLLMOptions } from "@/app/commons/LLMSelectorProvider/useLLMOptions"
 export default function CodegenDetailPage({
   params,
 }: {
-  params: { codegenId: string }
+  params: Promise<{ codegenId: string }>
 }) {
-  const { data: codegenDetail, isLoading } = useCodegenDetail(params.codegenId)
+  const { codegenId } = use(params)
+  const { data: codegenDetail, isLoading } = useCodegenDetail(codegenId)
   const router = useRouter()
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -52,7 +53,7 @@ export default function CodegenDetailPage({
 
   const { data: componentCodeData, isLoading: isComponentLoading } =
     useComponentCodeList({
-      codegenId: params.codegenId,
+      codegenId,
       page: currentPage,
       pageSize: 10,
       searchKeyword,
@@ -101,19 +102,19 @@ export default function CodegenDetailPage({
       { text: chatValue, type: "text" },
       ...(supportVision && images.length > 0
         ? images.map(
-            image =>
-              ({
-                image,
-                type: "image",
-              } as PromptImage),
-          )
+          image =>
+          ({
+            image,
+            type: "image",
+          } as PromptImage),
+        )
         : []),
     ]
 
     // if model is selected, add it to the request parameters
     const requestParams = {
       prompt: prompts,
-      codegenId: params.codegenId,
+      codegenId,
       model,
       provider,
     }
@@ -122,7 +123,7 @@ export default function CodegenDetailPage({
       const { data } = await initComponentMutation.mutateAsync(requestParams)
       const componentId = data._id
       if (componentId) {
-        router.push(`/main/codegen/${params.codegenId}/${componentId}`)
+        router.push(`/main/codegen/${codegenId}/${componentId}`)
       }
     } catch (error) {
       console.error("Failed to create component:", error)
@@ -241,7 +242,7 @@ export default function CodegenDetailPage({
                   // onEditClick={id => console.log("Edit clicked:", id)}
                   onDeleteClick={id => handleDeleteComponent(id)}
                   onItemClick={id =>
-                    router.push(`/main/codegen/${params.codegenId}/${id}`)
+                    router.push(`/main/codegen/${codegenId}/${id}`)
                   }
                 />
               )}
